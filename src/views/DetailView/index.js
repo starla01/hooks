@@ -2,20 +2,17 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+//CustomHooks
+import useCurrency from '../../hooks/useCurrency';
+
 //Estilos
 import styles from './index.module.sass';
 
 export default function DetailView() {
   const [product, setProduct] = useState({});
   const { condition, picture, price, title } = product;
+  const formatedPrice  = useCurrency(price || '$0');
   let { id } = useParams();
-
-  function formatPrice(price){
-    return (price).toLocaleString('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-    });
-  }
 
   useEffect(() => {
     const uri = `https://api.mercadolibre.com/items?ids=${id}`;
@@ -45,7 +42,7 @@ export default function DetailView() {
           price: {
             currency: currency_id,
             amount: price,
-            decimals: formatPrice(price),
+            decimals: formatedPrice,
           },
           picture,
           condition,

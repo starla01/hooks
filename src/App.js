@@ -1,6 +1,6 @@
 //Librerias
 import { useState } from 'react';
-import { Switch, Route, useParams } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { withRouter } from "react-router";
 
 //Views

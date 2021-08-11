@@ -1,38 +1,31 @@
 //Libraries
-import { useState }  from 'react';
+import { useState, useEffect }  from 'react';
 
 //Components
 import Logo from '../../components/Logo';
+
+//Custom Hooks
+import useSearch from '../../hooks/useSearch';
+import useVoice from '../../hooks/useVoice';
 
 //Styles
 import styles from './index.module.sass';
 
 export default function Header({setListItems, history}){
-
   const [strText, setStrText] = useState("");
+  const { phraseState } = useVoice("");
+  useSearch({strText, setListItems, history});
 
   function handleSearch(e){
     setStrText(e.target.value)
-    const key = e.keyCode || e.which;
-    if (key === 13) {
-      handleListItems()
-    }
   }
 
-  function handleListItems(){
-    const uri = `https://api.mercadolibre.com/sites/MLA/search?q=:${strText}&limit=12`;
-    fetch(uri, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setListItems(res.results);
-        res.results && history.push(`/items?search=${strText}`);
-      })
-  }
+  useEffect(() => {
+    if(phraseState && phraseState.length > 0){
+      const phrase = phraseState.replace("Encuantra ", "").replace("Buscar ", "").replace("Busca ", "");
+      setStrText(phrase);
+    }
+  }, [phraseState])
 
   return <div className={styles.header}>
     <Logo width="100" />
